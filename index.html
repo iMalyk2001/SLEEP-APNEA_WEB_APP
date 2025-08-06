@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Signal Monitor - Medical Device Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body>
+    <div id="login-container" class="login-container">
+        <div class="login-form">
+            <div class="medical-logo">
+                <div class="pulse-icon"></div>
+                <h1>Breathing Monitor</h1>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-btn">Access System</button>
+            </form>
+            <div class="login-info">
+                <p>Medical Device Interface v1.0</p>
+                <p>Authorized Personnel Only</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="main-app hidden">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="pulse-icon small"></div>
+                <h1>Breathing Signal Monitor</h1>
+            </div>
+            <div class="header-center">
+                <div class="status-indicators">
+                    <div class="status-item">
+                        <span class="status-label">Connection:</span>
+                        <span id="connection-status" class="status-value disconnected">Disconnected</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Sample Rate:</span>
+                        <span id="sample-rate" class="status-value">0 Hz</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Data Points:</span>
+                        <span id="data-count" class="status-value">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="connect-btn" class="control-btn">Connect</button>
+                <button id="export-btn" class="control-btn">Export CSV</button>
+                <button id="logout-btn" class="control-btn logout">Logout</button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3>Connection Settings</h3>
+                    <div class="form-group">
+                        <label for="esp32-ip">ESP32 IP Address:</label>
+                        <input type="text" id="esp32-ip" placeholder="192.168.1.100" value="localhost">
+                    </div>
+                    <div class="form-group">
+                        <label for="esp32-port">WebSocket Port:</label>
+                        <input type="number" id="esp32-port" placeholder="8080" value="8080">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>Display Settings</h3>
+                    <div class="form-group">
+                        <label for="time-window">Time Window (seconds):</label>
+                        <select id="time-window">
+                            <option value="10">10 seconds</option>
+                            <option value="30" selected>30 seconds</option>
+                            <option value="60">1 minute</option>
+                            <option value="300">5 minutes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-scale" checked>
+                            Auto-scale Y-axis
+                        </label>
+                    </div>
+                </div>
+
+                <div class="control-section">
+                    <h3>Recording</h3>
+                    <button id="start-recording" class="control-btn record">Start Recording</button>
+                    <button id="stop-recording" class="control-btn stop hidden">Stop Recording</button>
+                    <button id="clear-data" class="control-btn clear">Clear Data</button>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <h3>Sensor 1 - Chest Movement</h3>
+                        <div class="sensor-stats">
+                            <span>Current: <span id="sensor1-current">0.00</span> mV</span>
+                            <span>Avg: <span id="sensor1-avg">0.00</span> mV</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="sensor1-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <h3>Sensor 2 - Abdominal Movement</h3>
+                        <div class="sensor-stats">
+                            <span>Current: <span id="sensor2-current">0.00</span> mV</span>
+                            <span>Avg: <span id="sensor2-avg">0.00</span> mV</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="sensor2-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-panel">
+                    <div class="chart-header">
+                        <h3>Sensor 3 - Reference Signal</h3>
+                        <div class="sensor-stats">
+                            <span>Current: <span id="sensor3-current">0.00</span> mV</span>
+                            <span>Avg: <span id="sensor3-avg">0.00</span> mV</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="sensor3-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-info">
+                <span>Medical Device Interface v1.0 | Last Update: <span id="last-update">Never</span></span>
+                <span>Session: <span id="session-duration">00:00:00</span></span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
